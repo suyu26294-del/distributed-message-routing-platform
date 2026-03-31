@@ -1,0 +1,23 @@
+:root {
+  color-scheme: light;
+  font-family: "Segoe UI", "PingFang SC", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255, 196, 87, 0.25), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(19, 117, 170, 0.18), transparent 32%),
+    #f6f1e8;
+  color: #17222d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+#root {
+  min-height: 100vh;
+}
+

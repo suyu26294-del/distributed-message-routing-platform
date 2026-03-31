@@ -1,0 +1,73 @@
+CREATE DATABASE IF NOT EXISTS platform_v1;
+USE platform_v1;
+
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id VARCHAR(64) NOT NULL UNIQUE,
+  display_name VARCHAR(128) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS conversations (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  conversation_id VARCHAR(64) NOT NULL UNIQUE,
+  conversation_type VARCHAR(32) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS conversation_members (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  conversation_id VARCHAR(64) NOT NULL,
+  user_id VARCHAR(64) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  message_id VARCHAR(64) NOT NULL UNIQUE,
+  conversation_id VARCHAR(64) NOT NULL,
+  sender_id VARCHAR(64) NOT NULL,
+  recipient_id VARCHAR(64) NOT NULL,
+  body TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS offline_messages (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  message_id VARCHAR(64) NOT NULL UNIQUE,
+  recipient_id VARCHAR(64) NOT NULL,
+  body TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS files (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  file_id VARCHAR(64) NOT NULL UNIQUE,
+  owner_id VARCHAR(64) NOT NULL,
+  file_name VARCHAR(255) NOT NULL,
+  file_size BIGINT NOT NULL,
+  chunk_size INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS file_chunks (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  file_id VARCHAR(64) NOT NULL,
+  chunk_no INT NOT NULL,
+  offset_bytes BIGINT NOT NULL,
+  size_bytes INT NOT NULL,
+  checksum VARCHAR(128) NOT NULL,
+  node_id VARCHAR(64) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS upload_sessions (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  upload_id VARCHAR(64) NOT NULL UNIQUE,
+  file_id VARCHAR(64) NOT NULL,
+  owner_id VARCHAR(64) NOT NULL,
+  file_name VARCHAR(255) NOT NULL,
+  file_size BIGINT NOT NULL,
+  chunk_size INT NOT NULL,
+  completed TINYINT(1) NOT NULL DEFAULT 0
+);
+
+INSERT INTO users (user_id, display_name)
+VALUES ("u1000", "Alice"), ("u1001", "Bob")
+ON DUPLICATE KEY UPDATE display_name = VALUES(display_name);
+

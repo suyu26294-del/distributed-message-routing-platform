@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package platform.v1;
+
+message LoadScore {
+  double cpu_percent = 1;
+  uint32 active_connections = 2;
+  uint32 queue_depth = 3;
+}
+
+message NodeDescriptor {
+  string node_id = 1;
+  string service = 2;
+  string host = 3;
+  uint32 port = 4;
+  LoadScore load = 5;
+  bool healthy = 6;
+}
+
+message ResolveRouteRequest {
+  string route_key = 1;
+  string target = 2;
+}
+
+message ResolveRouteResponse {
+  string route_key = 1;
+  string node_id = 2;
+  string reason = 3;
+}
+
+message DeliverMessageRequest {
+  string message_id = 1;
+  string conversation_id = 2;
+  string sender_id = 3;
+  string recipient_id = 4;
+  string body = 5;
+}
+
+message DeliverMessageResponse {
+  bool accepted = 1;
+  bool delivered_online = 2;
+  bool deduplicated = 3;
+  string detail = 4;
+}
+
+message InitUploadRequest {
+  string owner_id = 1;
+  string file_name = 2;
+  uint64 file_size = 3;
+}
+
+message InitUploadResponse {
+  string upload_id = 1;
+  string file_id = 2;
+  uint32 chunk_size = 3;
+}
+
+service SchedulerService {
+  rpc ResolveRoute(ResolveRouteRequest) returns (ResolveRouteResponse);
+}
+
+service MessageService {
+  rpc Deliver(DeliverMessageRequest) returns (DeliverMessageResponse);
+}
+
+service FileService {
+  rpc InitUpload(InitUploadRequest) returns (InitUploadResponse);
+}
+
