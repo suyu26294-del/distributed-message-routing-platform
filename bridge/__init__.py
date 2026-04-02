@@ -1,0 +1,1 @@
+"""Browser bridge package for dist-msg-platform."""

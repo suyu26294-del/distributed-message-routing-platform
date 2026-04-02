@@ -1,0 +1,230 @@
+syntax = "proto3";
+
+package distplatform;
+
+message LoginRequest {
+  string user_id = 1;
+  string gateway_instance_id = 2;
+  string gateway_host = 3;
+  uint32 gateway_port = 4;
+}
+
+message LoginResponse {
+  bool ok = 1;
+  string session_id = 2;
+  string gateway_instance_id = 3;
+  string message = 4;
+}
+
+message Heartbeat {
+  string session_id = 1;
+  string user_id = 2;
+  string gateway_instance_id = 3;
+}
+
+message RouteEnvelope {
+  string message_id = 1;
+  string from_user = 2;
+  string to_user = 3;
+  string body = 4;
+  int64 created_at_ms = 5;
+  bool require_ack = 6;
+}
+
+message Ack {
+  string message_id = 1;
+  string user_id = 2;
+  bool accepted = 3;
+  string detail = 4;
+}
+
+message OfflinePullRequest {
+  string user_id = 1;
+}
+
+message OfflineMessageBatch {
+  repeated RouteEnvelope messages = 1;
+}
+
+message FileManifest {
+  string transfer_id = 1;
+  string owner_user = 2;
+  string file_name = 3;
+  uint64 file_size = 4;
+  uint32 chunk_size = 5;
+  uint32 total_chunks = 6;
+  string sha256 = 7;
+}
+
+message FileChunk {
+  string transfer_id = 1;
+  uint32 chunk_index = 2;
+  bytes data = 3;
+  bool eof = 4;
+}
+
+message ChunkAck {
+  string transfer_id = 1;
+  uint32 chunk_index = 2;
+  bool accepted = 3;
+  string detail = 4;
+  uint32 received_chunks = 5;
+}
+
+message ResumeToken {
+  string transfer_id = 1;
+  repeated uint32 missing_chunks = 2;
+  uint32 next_chunk = 3;
+}
+
+message FileDownloadRequest {
+  string transfer_id = 1;
+  uint32 chunk_index = 2;
+}
+
+message ServiceRegister {
+  string service_name = 1;
+  string instance_id = 2;
+  string host = 3;
+  uint32 port = 4;
+  uint32 weight = 5;
+}
+
+message LoadReport {
+  string service_name = 1;
+  string instance_id = 2;
+  uint32 active_connections = 3;
+  uint32 inflight_tasks = 4;
+  double load_score = 5;
+}
+
+message RouteQuery {
+  string target_user = 1;
+}
+
+message RouteDecision {
+  bool online = 1;
+  string instance_id = 2;
+  string host = 3;
+  uint32 port = 4;
+  string session_id = 5;
+}
+
+message SystemSummaryRequest {}
+
+message SystemSummary {
+  uint32 online_users = 1;
+  uint32 stored_offline_messages = 2;
+  uint32 registered_gateways = 3;
+  uint32 active_transfers = 4;
+}
+
+message EnsureUserRequest {
+  string user_id = 1;
+}
+
+message PersistMessageRequest {
+  RouteEnvelope envelope = 1;
+  string state = 2;
+}
+
+message UpdateMessageStateRequest {
+  string message_id = 1;
+  string state = 2;
+}
+
+message PersistFileRequest {
+  FileManifest manifest = 1;
+  string state = 2;
+}
+
+message RecordChunkRequest {
+  string transfer_id = 1;
+  uint32 chunk_index = 2;
+  uint32 chunk_size = 3;
+}
+
+message QueryTransferRequest {
+  string transfer_id = 1;
+}
+
+message QueryUserRequest {
+  string user_id = 1;
+}
+
+message MetadataRequest {
+  oneof payload {
+    EnsureUserRequest ensure_user = 1;
+    PersistMessageRequest persist_message = 2;
+    UpdateMessageStateRequest update_message = 3;
+    PersistFileRequest persist_file = 4;
+    RecordChunkRequest record_chunk = 5;
+    QueryTransferRequest query_transfer = 6;
+    QueryUserRequest query_user = 7;
+    SystemSummaryRequest summary = 8;
+  }
+}
+
+message MetadataResponse {
+  bool ok = 1;
+  string message = 2;
+  repeated uint32 chunk_indices = 3;
+  FileManifest manifest = 4;
+  uint32 online_users = 5;
+  uint32 stored_offline_messages = 6;
+  uint32 active_transfers = 7;
+}
+
+message SessionRequest {
+  oneof payload {
+    LoginRequest login = 1;
+    Heartbeat heartbeat = 2;
+  }
+}
+
+message SessionResponse {
+  bool ok = 1;
+  string message = 2;
+  LoginResponse login_response = 3;
+}
+
+message RouterRequest {
+  oneof payload {
+    ServiceRegister register_service = 1;
+    LoadReport load_report = 2;
+    RouteEnvelope route_envelope = 3;
+    OfflinePullRequest offline_pull = 4;
+    Ack ack = 5;
+    RouteQuery route_query = 6;
+    SystemSummaryRequest summary = 7;
+  }
+}
+
+message RouterResponse {
+  bool ok = 1;
+  string message = 2;
+  RouteDecision route_decision = 3;
+  OfflineMessageBatch offline_batch = 4;
+  Ack ack_response = 5;
+  SystemSummary summary = 6;
+}
+
+message FileRequest {
+  oneof payload {
+    FileManifest manifest = 1;
+    FileChunk chunk = 2;
+    ResumeToken resume_query = 3;
+    FileDownloadRequest download = 4;
+    SystemSummaryRequest summary = 5;
+  }
+}
+
+message FileResponse {
+  bool ok = 1;
+  string message = 2;
+  ChunkAck chunk_ack = 3;
+  ResumeToken resume_token = 4;
+  FileManifest manifest = 5;
+  FileChunk chunk = 6;
+  SystemSummary summary = 7;
+}

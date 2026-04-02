@@ -1,0 +1,15 @@
+build/
+run/
+logs/
+tmp/uploads/
+tmp/downloads/
+tools/demo_driver/__pycache__/
+tools/demo_driver/dist_platform_pb2.py
+bridge/.venv/
+bridge/__pycache__/
+bridge/tests/__pycache__/
+web/node_modules/
+web/dist/
+web/.vite/
+*.log
+tools/json_debug_client/__pycache__/

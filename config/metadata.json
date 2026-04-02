@@ -1,0 +1,9 @@
+{
+  "listen_host": "127.0.0.1",
+  "listen_port": 7401,
+  "mysql_host": "127.0.0.1",
+  "mysql_port": 3306,
+  "mysql_user": "dist_platform",
+  "mysql_password": "dist_platform",
+  "mysql_database": "dist_platform"
+}

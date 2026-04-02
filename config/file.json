@@ -1,0 +1,7 @@
+{
+  "listen_host": "127.0.0.1",
+  "listen_port": 7301,
+  "metadata_host": "127.0.0.1",
+  "metadata_port": 7401,
+  "data_dir": "/home/lio/projects/dist-msg-platform/tmp/uploads"
+}

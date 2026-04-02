@@ -1,0 +1,9 @@
+{
+  "listen_host": "127.0.0.1",
+  "listen_port": 7101,
+  "redis_host": "127.0.0.1",
+  "redis_port": 6379,
+  "metadata_host": "127.0.0.1",
+  "metadata_port": 7401,
+  "session_ttl_seconds": 300
+}
